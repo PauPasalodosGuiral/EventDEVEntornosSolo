@@ -1,23 +1,41 @@
 package com.azahartech.eventdev.calc;
 
 public class CalculadoraPrecios {
+
+    public final int TIPO_VIP = 2;
+    public final int TIPO_ESTUDIANTE = 1;
+    public final int RECARGO_VIP = 50;
+    public final double DESCUENTO_ESTUDIANTE_ALTO = 0.10;
+    public final double DESCUENTO_ESTUDIANTE_BAJO = 0.05;
+    public final double IVA = 0.21;
+
     // Metodo para calcular precio total
     // p: precio base, n: número entradas, t: tipo(1=estudiante, 2=vip)
-    public double calc(double p, int n, int t) {
-        double r = p * n;
-        if (t == 1) {
-// Descuento estudiante
-            if (r > 100) {
-                r = r - (r * 0.10);
+    public double calculadoraPrecioTotal(double precio, int numEntradas, int tipo) {
+        double precioBase = precio * numEntradas;
+        double precioFinal = aplicarDescuentosORecargos(tipo, precioBase);
+        return precioFinal;
+    }
+
+    private double aplicarDescuentosORecargos(int tipo, double precioBase) {
+        double precioFinal;
+
+        if (tipo == TIPO_ESTUDIANTE) {
+            // Descuento estudiante
+            if (precioBase > 100) {
+                precioFinal = precioBase - (precioBase * DESCUENTO_ESTUDIANTE_ALTO);
             } else {
-                r = r - (r * 0.05);
+                precioFinal = precioBase - (precioBase * DESCUENTO_ESTUDIANTE_BAJO);
             }
-        } else if (t == 2) {
-// Recargo VIP por servicios extra
-            r = r + 50;
+        } else if (tipo == TIPO_VIP) {
+            // Recargo VIP por servicios extra
+            precioFinal = precioBase + RECARGO_VIP;
+        } else {
+            precioFinal = precioBase;
         }
-// Impuesto
-        r = r + (r * 0.21);
-        return r;
+
+        // Impuesto (aplicado sobre el precio ya calculado)
+        precioFinal = precioFinal + (precioFinal * IVA);
+        return precioFinal;
     }
 }
