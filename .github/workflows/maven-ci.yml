@@ -1,0 +1,25 @@
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest # Usaremos una máquina Linux virtual
+
+    steps:
+      # Paso 1: Descargar tu código
+      - uses: actions/checkout@v3
+
+      # Paso 2: Instalar Java en el servidor
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'maven' # Acelera builds futuros
+
+      # Paso 3: Ejecutar Maven (Compilar y Testear)
+      - name: Build with Maven
+        run: mvn -B package --file pom.xml
